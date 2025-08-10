@@ -7,7 +7,7 @@
     <h1 class="text-3xl font-bold ">Your Tasks</h1>
     <p class="text-black text-lg ">Welcome, {{ request.user.username }} 👋</p>
 
-    <a href="{% url 'tracker:create_task' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Create Task</a>
+    <a href="{% url 'tracker:create_task' tenant=tenant %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Create Task</a>
   </div>
 
   {% if page_obj %}
@@ -33,12 +33,15 @@
             </div>
 
             <!-- Delete Button -->
-            <form action="{% url 'tracker:delete_task' task.pk %}" method="post">
+            <form action="{% url 'tracker:delete_task' tenant=tenant task_id=task.pk %}" method="post">
               {% csrf_token %}
               <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 ml-4">
                 Delete
               </button>
             </form>
+            <div>
+              <button type>
+            </div>
           </div>
         </li>
       {% endfor %}
