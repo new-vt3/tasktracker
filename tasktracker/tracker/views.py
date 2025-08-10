@@ -9,7 +9,7 @@ from .forms import TaskForm
 
 
 @login_required
-def task_list(request):
+def task_list(request, tenant):
     user = request.user
     if user.is_superuser:
         tasks = Task.objects.all().order_by('-due_date')
@@ -20,11 +20,11 @@ def task_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'tracker/task_list.html', {'page_obj': page_obj})
+    return render(request, 'tracker/task_list.html', {'page_obj': page_obj, 'tenant': tenant})
 
 
 @login_required
-def create_task(request):
+def create_task(request, tenant):
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
@@ -58,15 +58,15 @@ Login to your dashboard to manage the task.
     else:
         form = TaskForm()
 
-    return render(request, 'tracker/create_task.html', {'form': form})
+    return render(request, 'tracker/create_task.html', {'form': form, 'tenant': tenant})
 
 
-def logout_view(request):
+def logout_view(request, tenant):
     logout(request)
     return redirect('tracker:login')
 
 
-def login_view(request):
+def login_view(request, tenant):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -80,7 +80,7 @@ def login_view(request):
 
 
 @login_required
-def delete_task(request, task_id):
+def delete_task(request, tenant, task_id):
     task = get_object_or_404(Task, id=task_id)
     task.delete()
-    return redirect('tracker:task_list')
+    return redirect('tracker:task_list', tenant=tenant)
